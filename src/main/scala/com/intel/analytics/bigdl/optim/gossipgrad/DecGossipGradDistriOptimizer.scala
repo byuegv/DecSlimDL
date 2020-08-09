@@ -146,6 +146,13 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
     var maxEpochTimeCost: Double = 120.0
     var samplePickID: Int = edgeID - 1
 
+    logger.info("Wait for other edge to sign in")
+    while(jedisHelper.currentEdges() < goControler.edgeNum){
+      Thread.sleep(1000)
+    }
+    Thread.sleep(1000*20)
+    logger.info("All edges sign in, begin to train the model")
+
     val bcRemvControler = sc.broadcast(drmControler)
 
     val eachClassNLLCriterion = Array.fill[EachCrossEntropyCriterion[T]](_subModelNumber)(new EachCrossEntropyCriterion(sizeAverage = false))
@@ -162,7 +169,9 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
 
     // save trining dataset of current edge to Redis
     val _trData = _sapAry.collect()
+    logger.info(s"${edgeName} save samples(${_trData.length}) to Redis!")
     jedisHelper.lsetSamples[Array[(Long,Array[Sample[T]])]](_trData)
+    Thread.sleep(1000*20)
 
     logger.info("Count dataset")
     val countBefore = System.nanoTime()
@@ -176,12 +185,6 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
         "fly from random samples, which is better for convergence.")
     }
 
-    logger.info("Wait for other edge to sign in")
-    while(jedisHelper.currentEdges() < goControler.edgeNum){
-      Thread.sleep(1000)
-    }
-    Thread.sleep(1000*20)
-    logger.info("All edges sign in, begin to train the model")
 
     while (!endWhen(driverState)) {
       val lossSum = sc.accumulator(0.0, "loss sum")
