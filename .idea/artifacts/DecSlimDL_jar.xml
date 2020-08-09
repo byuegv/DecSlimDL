@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DecSlimDL:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DecSlimDL_jar</output-path>
+    <root id="archive" name="DecSlimDL.jar">
+      <element id="module-output" name="DecSlimDL" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/intel/analytics/bigdl/spark-version/2.0-SPARK_2.3/0.8.0/2.0-SPARK_2.3-0.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/intel/analytics/bigdl/core/dist/all/0.8.0/all-0.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/intel/analytics/bigdl/bigdl-SPARK_2.3/0.8.0/bigdl-SPARK_2.3-0.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/scopt/scopt_2.11/3.2.0/scopt_2.11-3.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/debasishg/redisclient_2.11/3.30/redisclient_2.11-3.30-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/debasishg/redisclient_2.11/3.30/redisclient_2.11-3.30.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/redis/clients/jedis/3.1.0/jedis-3.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-pool2/2.6.2/commons-pool2-2.6.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

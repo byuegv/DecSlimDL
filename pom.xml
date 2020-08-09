@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>byuegv</groupId>
+    <artifactId>DecSlimDL</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.fommil.netlib/all -->
+<!--        <dependency>-->
+<!--            <groupId>com.github.fommil.netlib</groupId>-->
+<!--            <artifactId>all</artifactId>-->
+<!--            <version>1.1.2</version>-->
+<!--            <type>pom</type>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.debasishg/redisclient -->
+        <dependency>
+            <groupId>net.debasishg</groupId>
+            <artifactId>redisclient_2.11</artifactId>
+            <version>3.30</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.11</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.intel.analytics.bigdl/bigdl-SPARK -->
+        <dependency>
+            <groupId>com.intel.analytics.bigdl</groupId>
+            <artifactId>bigdl-SPARK_2.3</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze_2.11</artifactId>
+            <version>0.13.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/amplab/spark-indexedrdd -->
+        <dependency>
+            <groupId>amplab</groupId>
+            <artifactId>spark-indexedrdd</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.fommil.netlib</groupId>
+            <artifactId>core</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central-ali</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>Spark-Packages-Repo</id>
+            <name>Spark Packages Repo</name>
+            <url>http://dl.bintray.com/spark-packages/maven</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository</name>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>apache-repo</id>
+            <name>Apache Repository</name>
+            <url>https://repository.apache.org/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jboss-repo</id>
+            <name>JBoss Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <name>sonatype repository</name>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>

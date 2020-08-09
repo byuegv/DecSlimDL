@@ -1,0 +1,23 @@
+# ingore complied file
+*.class
+
+# ingore log file
+*.log
+*.gc
+*.model
+*.optmethod
+
+
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+hs_err_pid*
+
+*.ctxt
+*.mtj.tmp/
+
