@@ -139,8 +139,8 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
     val goControler = state.get[GoSGDControler]("gocontroler").get
     val jedisHelper = new GossipGradHelper(host = goControler.redisHost,port = goControler.redisPort,
       clusterMode = goControler.redisClusterMode)
-    val edgeName = jedisHelper.signIn()
-    val edgeID = jedisHelper.edgeID
+    var edgeName = jedisHelper.signIn()
+    var edgeID = jedisHelper.edgeID
     logger.info(s"${edgeName} sign in!")
     var minEpochTimeCost: Double = 120.0
     var maxEpochTimeCost: Double = 120.0
@@ -211,6 +211,11 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
       val curEpoch = driverState.get[Int]("epoch").get
       val curIteration = driverState.get[Int]("neval").get
       // =====================   end       =====================
+
+//      if(curIteration % math.log(goControler.edgeNum).toInt == 0){
+//        edgeID = jedisHelper.resetEdgeID()
+//        edgeName = jedisHelper.edgeName
+//      }
 
       val driverMetrics = metrics
       val start = System.nanoTime()

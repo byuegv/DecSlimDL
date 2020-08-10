@@ -21,8 +21,8 @@ object GossipExamer {
       val jedisHelper = new GossipGradHelper("localhost",6379,false)
       val tp = scala.util.Random.nextInt(10)
       Thread.sleep((tp*1000).toLong)
-      val edgeName = jedisHelper.signIn()
-      val edgeID = jedisHelper.edgeID
+      var edgeName = jedisHelper.signIn()
+      var edgeID = jedisHelper.edgeID
       System.out.println(s"${threadName} sign in! ${jedisHelper.toString}")
 
       // wait for all edges sign in
@@ -46,6 +46,11 @@ object GossipExamer {
         // iteration
         for(iteration <- 1 to 15){
           val _header= s"Epoch ${epoch} Iteration: ${iteration}  "
+          if(iteration % 3 == 0){
+            edgeID = jedisHelper.resetEdgeID()
+            edgeName = jedisHelper.edgeName
+            System.out.println(s"${_header} new edgeId: ${edgeID}, edgeName: ${edgeName}")
+          }
           // ========== Training and aggregate parameters
           val etime = scala.util.Random.nextInt(10) + 1
           Thread.sleep((etime*1000).toLong)

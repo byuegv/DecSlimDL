@@ -20,11 +20,12 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
   private val gosPrefix: String = "GossipGrad:"
   private val edgeIdKey: String = s"${gosPrefix}ID"
   private val edgeIDSet: String = s"${gosPrefix}EdgeIDSet"
+  private val tpedgeIDSet: String = s"${gosPrefix}TPEdgeIDSet"
   var edgeID: Int = 1 // default 1
   private val finishCounter: String = s"${gosPrefix}Counter"
   private val finishUpdater: String = s"${gosPrefix}Updater"
   private val timeCostKey: String = s"${gosPrefix}TimeCost"
-  private var edgeName: String = ""
+  var edgeName: String = ""
   private val nRoundKey: String = s"${gosPrefix}newRound"
   private val sampleListKey: String = s"${gosPrefix}samples"
 
@@ -48,6 +49,26 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
       edgeName
     }finally {
       if(jedis!=null){
+        jedis.close()
+      }
+    }
+  }
+
+  def resetEdgeID() = {
+    try{
+      val lua =
+        s"""if redis.call('exists','${tpedgeIDSet}') == 0 then
+           |  redis.call('sunionstore','${tpedgeIDSet}','${edgeIDSet}')
+           |end
+           |local id = redis.call('spop','${tpedgeIDSet}')
+           |return id
+           |""".stripMargin
+      jedis = jpool.getResource
+      edgeID = jedis.eval(lua).toString.toInt
+      edgeName = s"${gosPrefix}edge:${edgeID}"
+      edgeID
+    }finally {
+      if(jedis != null){
         jedis.close()
       }
     }
