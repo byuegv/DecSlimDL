@@ -14,6 +14,7 @@ import com.intel.analytics.bigdl.tensor.Tensor
 import com.intel.analytics.bigdl.numeric.NumericFloat
 
 import scala.collection.mutable.ArrayBuffer
+import scala.reflect.ClassTag
 
 class GossipGradHelper(host: String = "localhost",port: Int = 6379,
                   clusterMode:Boolean = false) extends Serializable {
@@ -28,6 +29,7 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
   var edgeName: String = ""
   private val nRoundKey: String = s"${gosPrefix}newRound"
   private val sampleListKey: String = s"${gosPrefix}samples"
+  private var sampHashKey: String = s"${gosPrefix}samplesHash"
 
   // Jedis 连接池
   private val jpool = new JedisPool(new JedisPoolConfig(),host,port)
@@ -46,6 +48,7 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
       jedis = jpool.getResource
       edgeID = jedis.eval(lua).toString.toInt
       edgeName = s"${gosPrefix}edge:${edgeID}"
+      sampHashKey = s"${gosPrefix}sampHedge:${edgeID}"
       edgeName
     }finally {
       if(jedis!=null){
@@ -119,9 +122,62 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
     }
   }
 
+  def hsetSamples[T: ClassTag](samples: Array[T], batchSize: Int = 64) = {
+    val pOffset: Int = 0
+    val pLength = samples.length
+    val taskSize = pLength / batchSize
+    val extraTask = pLength % batchSize
+    var tid: Int = 0
+    var loop: Int = taskSize
+    if(taskSize == 0 && extraTask > 0){
+      loop = loop + 1
+    }
+    val strSamples = new Array[String](loop)
+    while(tid < loop){
+      val offset = pOffset + tid * batchSize
+      val endOffset = offset + batchSize
+      val subSamp = samples.slice(offset,endOffset)
+      val serSamples = SerializationUtil.serialize(subSamp)
+      strSamples(tid) = serSamples
+      tid = tid + 1
+    }
+    try{
+      jedis = jpool.getResource
+      for(tid <- 0 until strSamples.length){
+        val field = s"sapf${tid+1}"
+        jedis.hset(sampHashKey,field,strSamples(tid))
+      }
+    }finally {
+      if(jedis != null){
+        jedis.close()
+      }
+    }
+  }
+
+  def hvalsSamples[T: ClassTag](index: Long) = {
+    try{
+      val nkey = s"${gosPrefix}sampHedge:${index}"
+      jedis = jpool.getResource
+      val serSamps = jedis.hvals(nkey)
+      val length = serSamps.size()
+//      val samples = new ArrayBuffer[Array[T]]()
+      val samples = new Array[Array[T]](length)
+      for(i <- 0 until length){
+        val item = serSamps.get(i)
+//        samples.append(SerializationUtil.deserialize[Array[T]](item))
+        samples(i) = SerializationUtil.deserialize[Array[T]](item)
+      }
+//      samples.flatMap(x => x).toArray[T]
+      samples.flatMap(x => x)
+    } finally{
+      if(jedis != null){
+        jedis.close()
+      }
+    }
+  }
 
 
-  def lsetSamples[T](samples: T) = {
+  def lsetSamples[T: ClassTag](samples: T) = {
     try{
       val serSamples = SerializationUtil.serialize(samples)
       jedis = jpool.getResource
@@ -133,7 +189,7 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
     }
   }
 
-  def lindexSamples[T](index: Long) = {
+  def lindexSamples[T: ClassTag](index: Long) = {
     try{
       jedis = jpool.getResource
       val serSamples = jedis.lindex(sampleListKey,index-1)
@@ -302,6 +358,7 @@ class GossipGradHelper(host: String = "localhost",port: Int = 6379,
            |  redis.call('del','${finishUpdater}')
            |  redis.call('del','${sampleListKey}')
            |  redis.call('del','${edgeName}')
+           |  for _,k in ipairs(redis.call('keys','${gosPrefix}sampHedge:*')) do redis.call('del',k) end
            |else
            |  redis.call('srem','${edgeIDSet}',${edgeID})
            |  redis.call('del','${edgeName}')

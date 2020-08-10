@@ -31,15 +31,17 @@ object GossipExamer {
       }
       System.out.println("All Edges signed in!")
       // save samples
-      var sampArys = sampAryGenerater(10,5)
-      jedisHelper.lsetSamples[Array[Array[Sample[Float]]]](sampArys)
+      var sampArys = sampAryGenerater(19,5)
+//      jedisHelper.lsetSamples[Array[Array[Sample[Float]]]](sampArys)
+      jedisHelper.hsetSamples(sampArys,batchSize = 4)
 
       var epochStartTime = System.nanoTime()
       // Epoch
-      for(epoch <- 1 to 10){
+      for(epoch <- 1 to 5){
         // 从其他edge拉取训练样本
         val selId = jedisHelper.selEdgeID(canBeSelf = false)
-        sampArys = jedisHelper.lindexSamples[Array[Array[Sample[Float]]]](selId)
+//        sampArys = jedisHelper.lindexSamples[Array[Array[Sample[Float]]]](selId)
+        sampArys = jedisHelper.hvalsSamples[Array[Sample[Float]]](selId)
 
         var minTime = 12.0
         var maxTime = 12.0

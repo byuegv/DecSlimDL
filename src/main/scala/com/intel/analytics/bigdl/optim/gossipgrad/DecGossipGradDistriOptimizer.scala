@@ -170,8 +170,9 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
     // save trining dataset of current edge to Redis
     val _trData = _sapAry.collect()
     logger.info(s"${edgeName} save samples(${_trData.length}) to Redis!")
-    jedisHelper.lsetSamples[Array[(Long,Array[Sample[T]])]](_trData)
-    Thread.sleep(1000*20)
+//    jedisHelper.lsetSamples[Array[(Long,Array[Sample[T]])]](_trData)
+    jedisHelper.hsetSamples[Tuple2[Long,Array[Sample[T]]]](_trData,64)
+    Thread.sleep(1000*45)
 
     logger.info("Count dataset")
     val countBefore = System.nanoTime()
@@ -226,7 +227,8 @@ object DecGossipGradDistriOptimizer extends AbstractOptimizer {
         val selId = jedisHelper.selEdgeID(canBeSelf = true)
         samplePickID = samplePickID % goControler.edgeNum + 1
         logger.info(s"${edgeName} Pull training data from GossipGrad:Edge:${samplePickID}")
-        val pullTrData = jedisHelper.lindexSamples[Array[(Long,Array[Sample[T]])]](samplePickID)
+//        val pullTrData = jedisHelper.lindexSamples[Array[(Long,Array[Sample[T]])]](samplePickID)
+        val pullTrData = jedisHelper.hvalsSamples[Tuple2[Long,Array[Sample[T]]]](samplePickID)
         val _nxdataset = (DataSet.array(pullTrData,sc) -> SampleToIDAryMiniBatch(totalBatch = goControler.batchSize))
           .asInstanceOf[DistributedDataSet[MiniBatch[T]]]
         numSamples = _nxdataset.data(train = false).map(_.size()).reduce(_ + _) // update training sample number
