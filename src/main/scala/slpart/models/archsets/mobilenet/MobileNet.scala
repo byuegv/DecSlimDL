@@ -72,6 +72,7 @@ object MobileNetV1 {
     model.add(SpatialAveragePooling(kW = 1,kH = 1,dW = 1,dH = 1,globalPooling = true).setName("globalAvgPool_14"))
     model.add(Reshape(Array(1024)))
     model.add(Linear(1024,classNum).setName("fc_15"))
+    model.add(LogSoftMax())
     model
   }
   def main(args: Array[String]): Unit = {
@@ -126,6 +127,7 @@ object MobileNetThinner {
     model.add(SpatialAveragePooling(kW = 2,kH = 2,dW = 2,dH = 2,globalPooling = true).setName("globalAvgPool_14"))
     model.add(Reshape(Array(1024)))
     model.add(Linear(1024,classNum).setName("fc_15"))
+    model.add(LogSoftMax())
     model
   }
 
@@ -241,6 +243,7 @@ object MobileNetV1ImageNet {
 
     mobileNet.add(Reshape(Array(1024)))
     mobileNet.add(Linear(1024,classes).setName("fc_29")) // 1x1x1000
-    mobileNet.add(SoftMax())
+    mobileNet.add(LogSoftMax())
+    mobileNet
   }
 }

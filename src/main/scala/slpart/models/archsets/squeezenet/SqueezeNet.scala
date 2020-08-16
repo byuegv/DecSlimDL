@@ -72,6 +72,7 @@ object SqueezeNetCifarV1 {
     squeezeNet.add(SpatialAveragePooling(2,2,2,2,globalPooling = true).setName("avg_11"))
     squeezeNet.add(Reshape(Array(numClass)))
     squeezeNet.add(Linear(numClass,numClass).setName("fc_12"))
+    squeezeNet.add(LogSoftMax())
 
     squeezeNet
   }
@@ -144,6 +145,7 @@ object SqueezeNetCifarV2 {
     squeezeNet.add(SpatialAveragePooling(8,8,8,8,globalPooling = true).setName("avg_11"))
     squeezeNet.add(Reshape(Array(512)))
     squeezeNet.add(Linear(512,numClass).setName("fc_12"))
+    squeezeNet.add(LogSoftMax())
 
     squeezeNet
   }
@@ -218,7 +220,7 @@ object SqueezeNetCifarV3 {
     squeezeNet.add(SpatialAveragePooling(4,4,4,4,globalPooling = true).setName("avg_11"))
     squeezeNet.add(Reshape(Array(512)))
     squeezeNet.add(Linear(512,numClass).setName("fc_12"))
-
+    squeezeNet.add(LogSoftMax())
     squeezeNet
   }
 }
