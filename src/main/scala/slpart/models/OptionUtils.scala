@@ -130,6 +130,8 @@ object OptionUtils {
                         warmupEpoch: Int = 0,
                         hasDropout: Boolean = false,
                         hasBN: Boolean = false,
+                        shallow: Boolean = false,
+                        depthMultiplier: Int = 1,
 
                         batchSize: Int = 128,
                         maxEpoch: Int = 10,
@@ -283,6 +285,12 @@ object OptionUtils {
     opt[Boolean]("hasBN")
       .text("use BN layer")
       .action((x,c) => c.copy(hasBN = x))
+    opt[Boolean]("shallow")
+      .text("make network shallow")
+      .action((x,c) => c.copy(shallow = x))
+    opt[Int]("depthMultiplier")
+      .text("depthMultiplier")
+      .action((x,c) => c.copy(depthMultiplier = x))
 
     opt[Int]('b',"batchSize")
       .text("batchSize")
