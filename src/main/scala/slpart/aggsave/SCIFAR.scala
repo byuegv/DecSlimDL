@@ -54,7 +54,7 @@ object SCIFAR {
       val testOut = new PrintWriter(("test.txt"))
       validationSamples.collect().foreach(point => {
         val label = point.label().squeeze().toArray().head
-        val feature = point.feature().squeeze().toArray()
+        val feature = point.feature().reshape(Array(3*32*32)).squeeze().toArray()
         testOut.print(label)
         testOut.print(";")
         testOut.print(feature.mkString(","))
