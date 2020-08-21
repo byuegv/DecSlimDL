@@ -4,12 +4,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.io.PrintWriter
 
-
 import com.intel.analytics.bigdl.utils._
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkContext
 import com.intel.analytics.bigdl.numeric.NumericFloat
 import slpart.dataloader.Cifar10Loader
+import wxw.dataloader.AggCIFAR10
 
 
 object SCIFAR {
@@ -29,12 +29,17 @@ object SCIFAR {
       val sc = new SparkContext(conf)
       Engine.init
 
-      val trainSamples = Cifar10Loader.trainingSamplesAry(sc,param.dataset,param.zeroScore,isAggregate = param.aggregate,category = param.classes,
-              itqbitN = param.itqbitN,itqitN = param.itqitN,itqratioN = param.itqratioN,upBound = param.upBound,splitN = param.minPartN,isSparse = param.isSparse)
-      val validationSamples = Cifar10Loader.validateSamples(sc,param.dataset,param.zeroScore)
+//      val trainSamples = Cifar10Loader.trainingSamplesAry(sc,param.dataset,param.zeroScore,isAggregate = param.aggregate,category = param.classes,
+//              itqbitN = param.itqbitN,itqitN = param.itqitN,itqratioN = param.itqratioN,upBound = param.upBound,splitN = param.minPartN,isSparse = param.isSparse)
+//      val validationSamples = Cifar10Loader.validateSamples(sc,param.dataset,param.zeroScore)
+
+      val labelSel = parseLabelSelection2Set(param.labelSelection)
+      val trainSamples = AggCIFAR10.trainCifarData(sc,labelSel,aggMethod = param.aggMethod,path = param.dataset,
+        upBound = param.upBound)
+      val validationSamples = AggCIFAR10.valCifarData(sc,param.dataset)
 
       val trainOut = new PrintWriter("training.txt")
-      trainSamples.map(_._2).collect().foreach(agglist => {
+      trainSamples.collect().foreach(agglist => {
         val len = agglist.length
         for(i <- 0 until len){
           val point = agglist(i)
