@@ -27,27 +27,28 @@ object SMNIST {
       val sc = new SparkContext(conf)
       Engine.init
 
-//      val trainSamples = MnistLoader.trainingSamplesAry(sc,param.dataset,param.zeroScore,isAggregate = param.aggregate,category = param.classes,
-//              itqbitN = param.itqbitN,itqitN = param.itqitN,itqratioN = param.itqratioN,upBound = param.upBound,splitN = param.minPartN,isSparse = param.isSparse)
-//      val validationSamples = MnistLoader.validateSamples(sc,param.dataset,param.zeroScore)
+      val trainSamples = MnistLoader.trainingSamplesAry(sc,param.dataset,param.zeroScore,isAggregate = param.aggregate,category = param.classes,
+              itqbitN = param.itqbitN,itqitN = param.itqitN,itqratioN = param.itqratioN,upBound = param.upBound,splitN = param.minPartN,isSparse = param.isSparse)
+      val validationSamples = MnistLoader.validateSamples(sc,param.dataset,param.zeroScore)
 
 
-      val labelSel = parseLabelSelection2Set(param.labelSelection)
-      val trainSamples = AggMNIST.trainMnistData(sc,labelSel,aggMethod = param.aggMethod,path =
-        param.dataset, upBound = param.upBound)
-      val validationSamples = AggMNIST.valMnistData(sc,param.dataset)
+//      val labelSel = parseLabelSelection2Set(param.labelSelection)
+//      val trainSamples = AggMNIST.trainMnistData(sc,labelSel,aggMethod = param.aggMethod,path =
+//        param.dataset, upBound = param.upBound)
+//      val validationSamples = AggMNIST.valMnistData(sc,param.dataset)
 
+      val maxlen = trainSamples.map(_._2.length).max()
       val trainOut = new PrintWriter("training.txt")
-      trainSamples.collect().foreach(agglist => {
+      trainSamples.map(_._2).collect().foreach(agglist => {
         val len = agglist.length
-        for(i <- 0 until len){
-          val point = agglist(i)
+        for(i <- 0 until maxlen){
+          val point = agglist(i%len)
           val label = point.label().squeeze().toArray().head
-          val feature = point.feature().squeeze().toArray()
+          val feature = point.feature().reshape(Array(1*28*28)).squeeze().toArray()
           trainOut.print(label)
           trainOut.print(";")
           trainOut.print(feature.mkString(","))
-          if(i < (len-1)){
+          if(i < (maxlen-1)){
             trainOut.print("|")
           }
         }
